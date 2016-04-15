@@ -54,6 +54,19 @@ def add(*args):
 
 # TODO: Add functions for handling more arithmetic operations.
 
+def positive(*args):
+  """
+  Should return the string 'true' if the first arg
+  is greater
+  """
+  return 'true' if int(args[0]) > 0 else 'false'
+
+def negative(*args):
+  """
+  """
+  return 'true' if int(args[0]) > 0 else 'false'
+
+
 def resolve_path(path):
     """
     Should return two values: a callable and an iterable of
@@ -64,8 +77,14 @@ def resolve_path(path):
     # examples provide the correct *syntax*, but you should
     # determine the actual values of func and args using the
     # path.
-    func = add
-    args = ['25', '32']
+    args = path.strip("/").split("/")
+
+    func_name = args.pop(0)
+
+    func = {
+      "positive" : positive,
+      "negative" : negative,
+    }.get(func_name)
 
     return func, args
 
