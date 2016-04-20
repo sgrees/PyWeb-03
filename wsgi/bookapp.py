@@ -16,7 +16,7 @@ def resolve_path(path):
             continue
         args = match.groups([])
         return func, args
-    #we get here if no url matches
+    # we get here if no url matches
     raise NameError
 
 def book(book_id):
@@ -28,7 +28,6 @@ def book(book_id):
     <tr><th>ISBN</th><td>{isbn}</td></tr>
 </table>
 """
-
     book = DB.title_info(book_id)
     if book is None:
         raise NameError
@@ -38,31 +37,25 @@ def book(book_id):
 def books():
     all_books = DB.titles()
     body = ['<h1>a list of books</h1>', '<ul>']
-
     item_template = '<li><a href="/book/{id}">{title}</a></li>'
-
-    body += {
+    body += [
         item_template.format(**book) for book in all_books
-    }
-
+    ]
     body.append('</ul>')
     return '\n'.join(body)
 
 def application(environ, start_response):
     headers = [("Content-type", "text/html")]
-
     try:
         path = environ.get('PATH_INFO', None)
         if path is None:
             raise NameError
-
         func, args = resolve_path(path)
         # suppose args = ['id1']
         # suppose func = book
-        #then func(*args) = book('id1', 'bla')
+        # then func(*args) = book('id1', 'bla')
         body = func(*args)
         status = "200 OK"
-
     except NameError:
         status = "404 Not found"
         body = "<h1>Not Found</h1>"
@@ -70,7 +63,7 @@ def application(environ, start_response):
         status = "500 Internal Server Error"
         body = "<h1>Internal Server Error</h1>"
     finally:
-        headers.append(('Conntent-length', str(len(body))))
+        headers.append(('Content-Length', str(len(body))))
         start_response(status, headers)
         return [body.encode('utf8')]
 
