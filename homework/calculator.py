@@ -90,7 +90,9 @@ def resolve_path(path):
 
 def application(environ, start_response):
     # TODO: Your application code from the book database
-    # work here as well!
+    # work here as well! Remember that your application must
+    # invoke start_response(status, headers) and also return
+    # the body of the response in BYTE encoding.
     #
     # TODO (bonus): Add error handling for a user attempting
     # to divide by zero.
