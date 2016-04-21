@@ -45,85 +45,96 @@ import re
 
 def add(*args):
     """ Returns a STRING with the sum of the arguments """
-    # TODO: Fill sum with the correct value, based on the
+    # DONE: Fill sum with the correct value, based on the
     # args provided.
-    sum = "0"
-    try:
-        sum = eval(int(args[0]) + int(args[1]))
-    except Exception:
-        sum = "Unknown error"
-    return str(sum)
-# TODO: Add functions for handling more arithmetic operations.
+    args = [int(i) for i in args]
+    addition = args[0]
+    for i in args[1:]:
+        addition += i
+    return str(addition)
+
+# DONE: Add functions for handling more arithmetic operations.
 
 def subtract(*args):
     """ Returns a STRING with the difference of the arguments """
-    dif = "0"
-    try:
-        dif = eval(int(args[0]) - int(args[1]))
-    except Exception:
-        dif = "Unknown error"
-    return str(dif)
+    args = [int(i) for i in args]
+    diff = args[0]
+    for i in args[1:]:
+        diff -= i
+    return str(diff)
 
 def multiply(*args):
     """ Returns a STRING with the product of the arguments """
-    prod = "0"
-    try:
-        prod = eval(int(args[0]) * int(args[1]))
-    except Exception:
-        prod = "Unknown error"
+    args = [int(i) for i in args]
+    prod = args[0]
+    for i in args[1:]:
+        prod *= i
     return str(prod)
 
 def divide(*args):
     """ Returns a STRING with the quotient of the arguments """
-    quot = "0"
-    try:
-        quot = eval(int(args[0]) / int(args[1]))
-    except Exception:
-        quot = "Unknown error"
+    args = [int(i) for i in args]
+    quot = args[0]
+    for i in args[1:]:
+        quot /= i
     return str(quot)
 
-def positive(*args):
-    """
-    Should return the string 'true' if the first arg
-    is greater
-    """
-    return 'true' if int(args[0]) > 0 else 'false'
-
-def negative(*args):
-    """
-    """
-    return 'true' if int(args[0]) > 0 else 'false'
+def home(*args):
+    """ Returns a home page that explains how to perform calculations """
+    home_page = """<html>
+                <h1>Calculator Program</h1>
+                <body>To use this calculator, open a browser to this</ br>
+                wsgi application and type the desired the type of</ br>
+                calculation you require, followed by the numbers to be</ br>
+                calculated.</ br>
+                For example: `http://localhost:8080/multiple/3/5'.</ br>
+                The response will appear in the body of your browser.</ br>
+                For the above example,'15'. Your choices for types of</ br>
+                calculations are:</ br>
+                add</ br>
+                subtract</ br>
+                multiply</ br>
+                divide</ br>
+                </body>
+                </html>
+                """
+    return home_page
 
 def resolve_path(path):
     """
     Should return two values: a callable and an iterable of
     arguments.
     """
-    # TODO: Provide correct values for func and args. The
+    # DONE: Provide correct values for func and args. The
     # examples provide the correct *syntax*, but you should
     # determine the actual values of func and args using the
     # path.
     args = path.strip("/").split("/")
-
     func_name = args.pop(0)
-
-    func = {"positive": positive, "negative": negative}.get(func_name)
-
+    if not func_name:
+        func = home
+    else:
+        func = {
+        "add": add,
+        "subtract": subtract,
+        "multiply": multiply,
+        "divide": divide
+        }.get(func_name.lower())
     return func, args
 
 def application(environ, start_response):
-    # TODO: Your application code from the book database
+    # DONE: Your application code from the book database
     # work here as well! Remember that your application must
     # invoke start_response(status, headers) and also return
     # the body of the response in BYTE encoding.
     #
     # TODO (bonus): Add error handling for a user attempting
     # to divide by zero.
-    headers = [('Content-type', 'text/html')]
+    headers = [("Content-type", "text/html")]
     try:
         path = environ.get('PATH_INFO', None)
         if path is None:
-                raise NameError
+            raise NameError
         func, args = resolve_path(path)
         body = func(*args)
         status = "200 OK"
@@ -139,7 +150,7 @@ def application(environ, start_response):
         return [body.encode('utf8')]
 
 if __name__ == '__main__':
-    # TODO: Insert the same boilerplate wsgiref simple
+    # DONE: Insert the same boilerplate wsgiref simple
     # server creation that you used in the book database.
     from wsgiref.simple_server import make_server
     srv = make_server('localhost', 8080, application)
